@@ -15,11 +15,10 @@ struct ClassListView: View {
     var body: some View {
         VStack {
             NavigationView {
-                List {
-                    ForEach(classList, id: \.id) { _class in
+                List(classList, id: \.id) { _class in
                         ClassListCell(_class: _class)
+                            .frame(height: 100)
                             .padding()
-                    }
                 }
                 .navigationBarTitle("ClassList")
             }

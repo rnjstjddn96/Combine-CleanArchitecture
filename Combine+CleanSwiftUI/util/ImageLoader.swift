@@ -16,13 +16,13 @@ import class Kingfisher.KingfisherManager
 class ImageLoader: ObservableObject {
     @Published var image: UIImage?
     private var cancellable: AnyCancellable?
-//    var urlString: String?
+    var urlString: String?
     var imageCache = ImageCache.getImageCache()
     
-//    init(urlString: String) {
-//        self.urlString = urlString
-//        loadImage(with: urlString)
-//    }
+    init(urlString: String) {
+        self.urlString = urlString
+        loadImage()
+    }
     
     deinit {
         cancellable?.cancel()
@@ -32,22 +32,27 @@ class ImageLoader: ObservableObject {
         cancellable?.cancel()
     }
     
-    func loadImage(with url: String) {
-        guard let url = URL(string: url)
-        else { print("wrongURL"); return }
+    func loadImage() {
+        if loadImageFromCache() { return }
+        loadImageFromUrl()
+    }
+    
+    func loadImageFromUrl() {
+        guard let urlString = self.urlString else { return }
+        guard let url = URL(string: urlString) else { print("wrongURL"); return }
         cancellable = URLSession.shared
             .dataTaskPublisher(for: url)
-            .map { UIImage(data: $0.data) }
-            .replaceError(with: nil)
+            .tryMap { UIImage(data: $0.data) }
+            .map { result in
+                if let imageResult = result {
+                    self.imageCache.set(forKey: urlString, image: imageResult)
+                }
+                return result
+            }
+            .replaceError(with: UIImage(named: "whiteImage"))
             .receive(on: DispatchQueue.main)
             .assign(to: \.image, on: self)
     }
-//    func loadImage() {
-//        if loadImageFromCache() {
-//            return
-//        }
-//        loadImageFromUrl()
-//    }
     
 //    func loadImageFromUrl() {
 //        guard let urlString = urlString else {
@@ -63,17 +68,15 @@ class ImageLoader: ObservableObject {
 //            }
 //        }
 //    }
-//
-//    func loadImageFromCache() -> Bool {
-//        guard let urlString = urlString else {
-//            return false
-//        }
-//        guard let cacheImage = imageCache.get(forKey: urlString) else {
-//            return false
-//        }
-//        image = cacheImage
-//        return true
-//    }
+
+    func loadImageFromCache() -> Bool {
+        guard let urlString = self.urlString else { return false }
+        guard let cacheImage = imageCache.get(forKey: urlString) else {
+            return false
+        }
+        image = cacheImage
+        return true
+    }
 }
 
 

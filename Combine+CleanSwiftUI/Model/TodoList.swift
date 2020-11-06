@@ -32,6 +32,17 @@ enum Importancy: String {
     case noNeedToHurry
     case notNeccessary
     
+    var importancyValue: Int {
+        switch self {
+        case .emergency:
+            return 3
+        case .noNeedToHurry:
+            return 2
+        case .notNeccessary:
+            return 1
+        }
+    }
+    
     var importancyColor: Color {
         switch self {
         case .emergency:

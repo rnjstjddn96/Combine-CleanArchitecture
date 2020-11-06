@@ -10,9 +10,6 @@ import Combine
 
 class AppState: ObservableObject {
     @Published var todoList: TodoList = []
-    @Published var classList: ClassList = [] {
-        didSet {
-            print("brainew131: \(classList)")
-        }
-    }
+    @Published var classList: ClassList = []
 }
+

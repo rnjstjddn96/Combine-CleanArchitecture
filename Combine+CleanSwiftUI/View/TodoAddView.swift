@@ -47,7 +47,6 @@ struct TodoAddView: View {
                                          content: content,
                                          _importancy: importancy),
                                          list: $todoList)
-                todoList = injected.appState.todoList
                 presentaionMode.wrappedValue.dismiss()
             }) {
                 Text("Add")

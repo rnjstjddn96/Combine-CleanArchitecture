@@ -18,22 +18,22 @@ class ClassWebRepository: ClassWebRepositoryProtocol {
     var cancellable = Set<AnyCancellable>()
     
     func getLists(classList: Binding<ClassList>) {
-        guard let url = URL(string: "http://150.109.84.234:10151/api/v1/classes") else { return }
-        URLSession.shared
-            .dataTaskPublisher(for: url)
-            .subscribe(on: bgQueue)
-            .receive(on: DispatchQueue.main)
-            .map(\.data)
-            .decode(type: ClassList.self, decoder: JSONDecoder())
-            .sink { completion in
-                if case .failure(let error) = completion {
-                    print("error: \(error)")
-                }
-            } receiveValue: { value in
-                print("value: \(value)")
-                classList.wrappedValue = value
-            }
-            .store(in: &cancellable)
+//        guard let url = URL(string: "http://150.109.84.234:10151/api/v1/classes") else { return }
+//        URLSession.shared
+//            .dataTaskPublisher(for: url)
+//            .subscribe(on: bgQueue)
+//            .receive(on: DispatchQueue.main)
+//            .map(\.data)
+//            .decode(type: ClassList.self, decoder: JSONDecoder())
+//            .sink { completion in
+//                if case .failure(let error) = completion {
+//                    print("error: \(error)")
+//                }
+//            } receiveValue: { value in
+//                print("value: \(value)")
+//                classList.wrappedValue = value
+//            }
+//            .store(in: &cancellable)
     }
     
 }

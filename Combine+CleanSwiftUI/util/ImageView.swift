@@ -8,15 +8,13 @@
 import SwiftUI
 
 struct ImageView: View {
-    @ObservedObject var imageLoader = ImageLoader()
-    private var url: String
+    @ObservedObject var imageLoader: ImageLoader
     private var placeHolder: Image
     
     
-    init(urlString: String, placeHolder: Image) {
-        self.url = urlString
+    init(with urlString: String, placeHolder: Image) {
+        self.imageLoader = ImageLoader(urlString: urlString)
         self.placeHolder = placeHolder
-        self.imageLoader.loadImage(with: self.url)
     }
     
     var body: some View {
@@ -38,6 +36,6 @@ struct ImageView: View {
 
 struct ImageView_Previews: PreviewProvider {
     static var previews: some View {
-        ImageView(urlString: "https://madi-1302397712.cos.ap-seoul.myqcloud.com/images/5f027fbcc9986921824aae6f_1602646108078.jpg", placeHolder: Image("whiteImage"))
+        ImageView(with: "https://madi-1302397712.cos.ap-seoul.myqcloud.com/images/5f027fbcc9986921824aae6f_1602646108078.jpg", placeHolder: Image("whiteImage"))
     }
 }

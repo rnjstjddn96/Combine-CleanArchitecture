@@ -38,7 +38,6 @@ class ClassListInteractor: ClassListInteractorProtocol {
                         print("error: \(error)")
                     }
                 } receiveValue: { value in
-                    print("value: \(value)")
                     self.appState.classList = value
                     classList.wrappedValue = self.appState.classList
                 }

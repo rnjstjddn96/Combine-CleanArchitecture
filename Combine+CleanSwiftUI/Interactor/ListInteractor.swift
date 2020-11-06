@@ -12,6 +12,8 @@ protocol ListInteractorProtocol {
     func loadLists(list: Binding<TodoList>)
     func createList(newList: Todo, list: Binding<TodoList>)
     func deleteList(todo: Todo, list: Binding<TodoList>)
+    func sortByTitle(list: Binding<TodoList>)
+    func sortByImportancy(list: Binding<TodoList>)
 }
 
 struct ListInteractor: ListInteractorProtocol {
@@ -26,26 +28,36 @@ struct ListInteractor: ListInteractorProtocol {
     
     func loadLists(list: Binding<TodoList>) {
         let receivedData = todoRepository.getAllLists()
-        appState.todoList = receivedData
-        list.wrappedValue = appState.todoList
+        list.wrappedValue.append(contentsOf: receivedData)
     }
     
     func createList(newList: Todo, list: Binding<TodoList>) {
         let receivedData = todoRepository.createList(newList: newList)
-        appState.todoList.append(receivedData)
-        list.wrappedValue = appState.todoList
+        list.wrappedValue.append(receivedData)
     }
     
     func deleteList(todo: Todo, list: Binding<TodoList>) {
         todoRepository.removeList(item: todo)
-        appState.todoList = appState.todoList.filter{ todo.id != $0.id }
-//        appState.todoList = todoRepository.getAllLists()
-        list.wrappedValue = appState.todoList
+        list.wrappedValue = list.wrappedValue.filter{ todo.id != $0.id }
+    }
+    
+    func sortByTitle(list: Binding<TodoList>) {
+        list.wrappedValue = list.wrappedValue.sorted(by: { (first, second) -> Bool in
+            first.title < second.title
+        })
+    }
+    
+    func sortByImportancy(list: Binding<TodoList>) {
+        list.wrappedValue = list.wrappedValue.sorted(by: { (first, second) -> Bool in
+            first.importancy.importancyValue > second.importancy.importancyValue
+        })
     }
 }
 
 struct StubListInteractor: ListInteractorProtocol {
+    func sortByTitle(list: Binding<TodoList>) { }
     func createList(newList: Todo, list: Binding<TodoList>) { }
     func deleteList(todo: Todo, list: Binding<TodoList>) { }
     func loadLists(list: Binding<TodoList>) { }
+    func sortByImportancy(list: Binding<TodoList>) { }
 }

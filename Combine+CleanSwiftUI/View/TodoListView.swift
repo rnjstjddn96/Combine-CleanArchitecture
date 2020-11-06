@@ -10,31 +10,39 @@ import SwiftUI
 struct TodoListView: View {
     @Environment(\.injected) private var injected: DIContainer
     @State var todoList: TodoList = []
+    @State var id: Int = 0
     
     var body: some View {
         NavigationView {
             List {
                 ForEach(todoList, id: \.id) { todo in
-                    NavigationLink(destination: TodoDetailView(selected: todo)) {
+                    ZStack {
                         ListCell(todo: todo)
                             .padding()
-                            .background(Blurview())
+                            .background(Color.blue.opacity(0.3))
                             .cornerRadius(10)
+                        NavigationLink(destination: TodoDetailView(selected: todo)) {
+                            EmptyView()
+                        }.buttonStyle(PlainButtonStyle())
                     }
-                    .buttonStyle(PlainButtonStyle())
+                    .listRowBackground(Color.clear)
+//                    .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
                 }
                 .onDelete(perform: deleteTodo)
-                .onMove (perform: moveTodo)
-            }
-            .padding(.top)
+            }.id(id)
+            .background(Color.red)
             .navigationBarTitle("TodoList")
-            .navigationBarItems(trailing: addBtn)
-            
+            .navigationBarItems(leading: sortBtn, trailing: addBtn)
         }
         .onAppear() {
-            //TODO: appstate의 todoList를 로컬State 변수에 Binding
-            //TODO: Redux + Store 개념 공부
             injected.interactors.listInteractor.loadLists(list: $todoList)
+        }
+    }
+    
+    var sortBtn: some View {
+        Menu("SortBy") {
+            Button("Title", action: { injected.interactors.listInteractor.sortByTitle(list: $todoList) })
+            Button("Tag", action: { injected.interactors.listInteractor.sortByImportancy(list: $todoList) })
         }
     }
     
@@ -46,10 +54,6 @@ struct TodoListView: View {
         for index in offset {
             injected.interactors.listInteractor.deleteList(todo: todoList[index], list: $todoList)
         }
-    }
-    
-    func moveTodo(source: IndexSet, destination: Int) {
-//        injected.interactors.listInteractor.moveList
     }
 }
 

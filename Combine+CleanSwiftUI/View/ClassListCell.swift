@@ -13,14 +13,11 @@ struct ClassListCell: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                GeometryReader { geo in
-                    ImageView(urlString: _class.bannerImages.first?.thumbURL ?? "",
+                    ImageView(with: _class.bannerImages.first?.thumbURL ?? "",
                               placeHolder: Image("whiteImage"))
-                        .frame(width: geo.size.width , height: geo.size.width, alignment: .center)
-                        .padding()
-                }
-            }
-            .padding()
+                        .frame(width: 100, height: 100)
+                            .padding()
+            }.padding()
             Spacer()
             VStack(alignment: .leading) {
                 HStack {
